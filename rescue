@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# Get logs and restart X good for AMD crappy fglrx drivers.
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+
+# Config
+path="/var/log"
+destination=~/"rescue"
+
+# Dateformat
+date=$(date +[%F-%a]%H:%M) 
+echo "Date:  $date "
+
+# Ask for userinput, Nn [enter] will be false
+asksure(){
+  read -p "Want to kill Xorg & Restart KDM? [y/N] " -n 1 choice
+  case "$choice" in
+  Y|y ) return 0;;
+  N|n ) return 1;;
+  * ) return 1;;
+  esac
+}
+
+if [[ -d "$destination" ]]; then
+  echo "Folder exists in ["$destination"] "
+  
+  else
+  
+  echo "Folder does not exist, creating folder ["$destination"] "
+  mkdir "$destination"
+fi
+
+echo ""
+echo "Saving $path/Xorg.0.log..."
+cat "$path"/Xorg.0.log > "$destination"/Xorg.0.log"$date"
+
+echo "Saving $path/Xorg.0.log.old..."
+cat "$path"/Xorg.0.log > "$destination"/Xorg.0.log.old"$date"
+
+echo "Saving dmesg..."
+dmesg > "$destination"/dmesg.log"$date"
+
+echo "Saving kernel.log..."
+sudo cat "$path"/kernel.log > "$destination"/kernel.logs"$date"
+echo ""
+
+if asksure; then
+  
+  echo ""
+  echo "[1/2] Killing KDM..."
+  sudo systemctl kill kdm
+  
+  echo ""
+  echo "[2/2] Booting up KDM..."
+  sleep 2
+  sudo systemctl start kdm
+  
+  else
+  
+  echo ""
+  exit 0
+fi
+
+exit 0

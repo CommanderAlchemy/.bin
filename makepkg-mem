@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# A wrapper script for makepkg to put $srcdir on ramdisk
+# I call this script "makepkg-mem"
+# Author: icarus-c
+
+DIR=/dev/shm/makepkg
+if  [ ! -d $DIR ]; then
+        echo "#$DIR doesnt exist, make it.."
+        mkdir $DIR
+        chmod 1777 $DIR
+fi
+
+echo "#source PKGBUILD"
+source $PWD/PKGBUILD || exit
+
+echo "#mkdir $DIR/$pkgname/src"
+mkdir -p $DIR/$pkgname/src || exit
+
+echo "#ln -s $DIR/$pkgname/src $PWD/src"
+ln -sf $DIR/$pkgname/src $PWD/src || exit
+
+echo "#makepkg $@ now"
+makepkg $@
+
+echo "#cleaning up"
+rm -rf $DIR/$pkgname $PWD/src $PWD/pkg

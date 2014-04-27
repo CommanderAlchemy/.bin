@@ -1,0 +1,4 @@
+# Create a loopback for Asus Essence STX to play whats on linein to speakers.
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+pacmd load-module module-loopback source=alsa_input.pci-0000_06_04.0.analog-stereo sink=alsa_output.pci-0000_06_04.0.iec958-stereo

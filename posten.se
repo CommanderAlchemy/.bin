@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# Posten.se probably Depricated by now.
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+BROWSER=`gconftool-2 --get '/desktop/gnome/url-handlers/http/command' | cut -f1 -d' ' `
+
+if [ "$1" == "-s" ];then
+  echo "saving to file"
+  #Depricated
+  wget "http://server.logistik.posten.se/servlet/PacTrack?kolliid=$2&lang=SE&xslURL=%2Fxsl%2Fpactrack%2Fstandard.xsl"
+fi
+
+if [ "$1" == "-h" ];then 
+  echo ""
+  echo "Usage:"
+  echo "posten.se kolli-id"
+  echo ""
+  echo "Operators:"
+  echo "-s         .save to file"
+  echo "-h .shows this help page"
+fi
+
+if [ "$1" != "-h" ] && [ "$1" != "-s" ];then 
+  #Depricated
+  #${BROWSER} "http://server.logistik.posten.se/servlet/PacTrack?kolliid=$1&lang=SE&xslURL=%2Fxsl%2Fpactrack%2Fstandard.xsl"&${BROWSER}
+  ${BROWSER} "http://www.posten.se/sv/Kundservice/Sidor/Sok-brev-paket.aspx?view=item&itemid=$10$1"&
+fi
+exit 0

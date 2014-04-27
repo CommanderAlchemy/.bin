@@ -1,0 +1,66 @@
+#!/bin/bash
+# Download and Convert Youtube video to a mp3 file with the same bitrate as the target source.
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+shopt -s extglob
+format=mp3
+bitrate=192
+save=false
+title=$(youtube-dl -e "$1")
+tmpdir=.tmpdir"$title"
+program=null
+
+if [[ -a `ls /usr/bin/avconv` ]]; then
+echo "[Using avconv instead of FFMPEG]"
+else
+echo "[Using FFMPEG]"
+fi
+
+echo ""
+echo "[Creating Temporary Folder]"
+echo "mkdir "$tmpdir""
+mkdir "$tmpdir"
+cd "$tmpdir"
+
+echo ""
+echo "[Downloading Video]"
+youtube-dl -t "$1"
+
+if [[ "$2" == "-s" ]]; then
+  save=true
+fi
+
+bitrate=$(ffmpeg -i "$title"* |& awk '/Audio:/ {print $12}')
+
+echo ""
+echo "[Starting conversion]"
+echo "Filename: "$title"."$format""
+echo "Bitrate: "$bitrate" kb/s"
+echo "Save Video:" "$save"
+echo ""
+
+ffmpeg -i "$title"* -f "$format" -ab "$bitrate"k "$title"."$format"
+
+if ! "$save"; then
+  echo ""
+  echo "[Removing Temporary Video]"
+  echo rm "$title"!(.mp3)
+  rm "$title"!(.mp3)
+fi
+
+echo ""
+echo "[Moving Files]"
+echo "mv "$title"* .."
+mv "$title"* .. && cd ..
+
+echo ""
+echo "[Cleaning Temporary Folder]"
+echo "rm -r "$tmpdir""
+rm -r "$tmpdir"
+
+echo ""
+echo "[Created following files]"
+ls | grep "$title"
+
+exit
+

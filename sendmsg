@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Easy script to create notifications for the desktop. It can be used from ssh
+# by using the -X command and display is by default exported to 0:
+# It will use default vaules if they are not set by the user.
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+export DISPLAY=:0
+
+if [[ "$1" == "" ]]; then
+    echo "[Usage]"
+    echo "First     param: Message      default: null"
+    echo "Second    param: App Name     default: Notify"
+    echo "Third     param: Icon         default: gtk-info"
+    echo "Fourth    param: urgency      default: normal"
+fi
+    
+send () {
+    # Message
+    if [[ "$1" == "" ]]; then
+        msg="null"
+    else
+        msg="$1"
+    fi
+
+    # App-Name
+    if [[ "$2" == "" ]]; then
+        app="Notify"
+    else
+        app="$2"
+    fi
+
+    # Icon
+    if [[ "$3" == "" ]]; then
+        icon=gtk-info
+    else
+        icon="$3"
+    fi
+
+    if [[ "$4" == "" ]]; then
+        urgency=normal
+    else
+        urgency="$4"
+    fi
+    
+    notify-send "$app" --app-name="$app" --icon="$icon" --urgency="$urgency" "$msg"
+}
+send "$1" "$2" "$3" "$4"
+exit 0

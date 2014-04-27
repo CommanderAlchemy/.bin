@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+watch -n 1 -t -c "aticonfig --od-getclock && aticonfig --od-gettemperature && aticonfig --pplib-cmd 'get fanspeed 0' && sensors | grep temp"

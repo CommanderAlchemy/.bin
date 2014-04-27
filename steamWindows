@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# When executed it shuts down steam and launches a wineprefix with Steam with no-dwrite to override missing text.
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+if [[ "$1" == "-k" ]]; then
+	WINEPREFIX=~/.Games/steam wineserver -k
+	echo "Killing Steam from commandline"
+	exit 0
+fi
+
+echo Exporting Wineprefix
+export WINEPREFIX=~/.Games/steam
+export WINEDEBUG=-all
+process="$(pgrep -x steam)"
+re='^[0-9]+$'
+
+if [[ $process =~ $re ]]; then
+  kill -1 "$(pgrep -x steam)" || { echo "Could not kill process: "$(pgrep -x steam)"" && exit 1; }
+fi
+
+echo Launching Steam with --no-dwrite
+wine ~/.Games/steam/drive_c/Program\ Files\ \(x86\)/Steam/Steam.exe --no-dwrite &> /dev/null&
+exit 0

@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Documentation: 	https://trac.ffmpeg.org/wiki/x264EncodingGuide
+# Twitch requirements: 	http://help.twitch.tv/customer/portal/articles/1253460-broadcast-requirements
+# Twitch servers: 	http://bashtech.net/twitch/ingest.php
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+
+echo "Streaming"
+
+# Resolution
+INRES="1920x1080" 				# input resolution
+OUTRES="1280x720"				# stream resolution
+
+# Stream Properties
+BUFFERSIZE=2.5M					# buffersize (should be equal or higher than bitrate)
+BITRATE=2.5M					# bitrate 
+
+# Encoding Video
+FPS="30" 					# target FPS
+QUAL="veryfast" 				# quality preset ultrafast, superfast, veryfast, faster, fast, medium, slow etc...
+CRF=23						# Constant Rate Factor, 0-51 where 18 is lossless (Less is better)
+THREADS=8					# use number of CPU threads/cores
+
+STREAM_KEY="$1" 				# streamkey
+URL="rtmp://live-arn.justin.tv/app/$STREAM_KEY" # stockholm server
+
+KEY_INTERVAL=$((2 * $FPS))			# Calculate frame interval for twitch requirements
+
+ffmpeg \
+    -f x11grab -s "$INRES" -r "$FPS" -i :0.0+1080,200 \
+    -f pulse -i alsa_output.pci-0000_06_04.0.analog-stereo.monitor \
+    -c:v libx264 -preset "$QUAL" -s "$OUTRES" -pix_fmt yuv420p -b:v "$BITRATE" \
+    -c:a libmp3lame -ab 128k -ar 44100 \
+    -threads "$THREADS" -minrate "$BITRATE" -maxrate "$BITRATE" -bufsize "$BUFFERSIZE" -g "$KEY_INTERVAL" \
+    -f flv "$URL" 

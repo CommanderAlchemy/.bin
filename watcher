@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Author: Stackoverflow
+
+function watcher()
+{ 
+  WATCHERTIME=$1
+  WATCHERFILE=/tmp/watcher$$
+  shift
+  while true; do
+    WATCHERHEIGHT=$(($(tput lines) - 3))
+    ( eval $* ) | head -n ${WATCHERHEIGHT} > ${WATCHERFILE} 2>/dev/null
+    clear
+    echo -n "Every ${WATCHERTIME} seconds - "
+    date
+    echo
+    cat ${WATCHERFILE}
+    rm -f ${WATCHERFILE}
+    echo
+    echo "=="
+    sleep ${WATCHERTIME}
+  done
+}

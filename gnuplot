@@ -1,0 +1,2 @@
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+plot Documents/plot using 1:2 title 'FPS Optimization OFF' with lines, Documents/plot using 1:3 title 'FPS Optimization ON' with lines, Documents/plot using 1:4 title 'Vanilla Wine 1.7.4' with lines, Documents/plot using 1:5 title 'Windows 7' with lines; set title 'EVE - Online'; set xlabel 'seconds'; set ylabel 'frames'

@@ -1,0 +1,9 @@
+#!/bin/bash
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+echo "Adding Droid sans mono slashed to brackets"
+echo "Before"
+sed -n /font-family:/p /opt/brackets/www/styles/brackets_theme_default.less
+sudo sed -i 's/font-family:/font-family: "Droid sans mono slashed",/g' /opt/brackets/www/styles/brackets_theme_default.less
+echo "After:"
+sed -n /font-family:/p /opt/brackets/www/styles/brackets_theme_default.less

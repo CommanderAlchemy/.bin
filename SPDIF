@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+# Description:
+# Toggles SPDIF state ON/OFF when executed.
+
+
+if [[ "$(amixer get -c 0 IEC958 | awk '/Mono:/ {print $3}')" == "[on]" ]];then
+     amixer set -c 0 IEC958 mute
+else
+    amixer set -c 0 IEC958 unmute
+fi
