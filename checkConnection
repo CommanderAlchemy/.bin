@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+# Description:
+# Checks for connection status to host.
+# Uses sendmsg to send desktop notification
+
+log=~/.connectionstatus.log
+host=8.8.8.8
+
+# Check connection to host
+check_connection() {
+  ping -c 4 -n -q "$host" > /dev/null
+  response=$?
+
+  if [[ $response = 0 ]]; then
+    echo "$(date)" " Connection established to "$host"" >> "$log"
+    sendmsg "Connection establsihed to "$host"" "Connection Status"
+  
+  else
+    echo "$(date)" " Connection failed" >> "$log"
+    sendmsg "Connection failed to "$host"" "Connection Status"
+  fi
+}
+
+# Create log if it does not exist
+create_log() {
+  if [[ ! -a $log ]]; then
+    echo "no connectionstatus.log found, generating a new one"
+    echo "Log generated automaticly" "$(date)" > "$log"
+  fi
+}
+
+create_log
+check_connection
+exit 0
