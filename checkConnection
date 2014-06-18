@@ -14,11 +14,11 @@ check_connection() {
   response=$?
 
   if [[ $response = 0 ]]; then
-    echo "$(date)" " Connection established to "$host"" >> "$log"
+    echo "$(date)" " Connection established to  "$host"" >> "$log"
     sendmsg "Connection establsihed to "$host"" "Connection Status"
   
   else
-    echo "$(date)" " Connection failed "$host"" >> "$log"
+    echo "$(date)" " Connection failed to       "$host"" >> "$log"
     sendmsg "Connection failed to "$host"" "Connection Status"
   fi
 }
