@@ -18,7 +18,7 @@ check_connection() {
     sendmsg "Connection establsihed to "$host"" "Connection Status"
   
   else
-    echo "$(date)" " Connection failed" >> "$log"
+    echo "$(date)" " Connection failed "$host"" >> "$log"
     sendmsg "Connection failed to "$host"" "Connection Status"
   fi
 }
@@ -26,8 +26,8 @@ check_connection() {
 # Create log if it does not exist
 create_log() {
   if [[ ! -a $log ]]; then
-    echo "no connectionstatus.log found, generating a new one"
-    echo "Log generated automaticly" "$(date)" > "$log"
+    echo "no "$log" found, generating a new one"
+    echo "Log generated automatically" "$(date)" > "$log"
   fi
 }
 
