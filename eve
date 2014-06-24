@@ -73,7 +73,7 @@ OPTIONS:
    
 EOF
 }
-set -x
+#set -x
 # Wineserver killer
 killPrefix() {
 
@@ -201,6 +201,11 @@ do
 		  usage
 		  exit 0
 		  ;;
+		
+		?|*)
+		  usage
+		  exit 1
+		  ;;
 
         esac
 done
@@ -261,6 +266,6 @@ fi
 if $optimize; then
   export GL_THREADED_OPTIMIZATIONS=1
 fi
-
+sed -n '/CSMT/p' "$WINEPREFIX"/user.reg
 WINEDEBUG="$flag" "$winepath"wine explorer /desktop="EVE-"$char"@"$server"","$resolution" "$install" &>>~/EVE/"$char".log&
 exit 0

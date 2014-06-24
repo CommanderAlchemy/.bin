@@ -1,0 +1,68 @@
+#!/bin/bash                                                                                                                                                                                                                                                                       
+#                                                                                                                                                                                                                                                                                 
+# WINE CSMT switch
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+#
+# Description
+# Looks for enabled|disabled in user.reg of wine then 
+# toggles correctly in tempfile and switches using regedit.
+# If there is no key entry it will create new key with CSMT enabled
+
+# Checks CSMT key and toggles
+
+CSMT_SWITCH() { 
+  # If CSMT was enabled disable it.
+  if [[ $previous_state == '"CSMT"="enabled"' ]]; then
+    new_state=('"CSMT"="disabled"')
+    sed -i 's/^"CSMT".*/'$new_state'/' "$tempfile"
+    regedit "$tempfile" 
+    # If CSMT was disabled enable it.
+    else if [[ $previous_state == '"CSMT"="disabled"' ]]; then
+    new_state=('"CSMT"="enabled"')
+    sed -i 's/^"CSMT".*/'$new_state'/' "$tempfile"
+    regedit "$tempfile" 
+    # If there was no CSMT value key create it from template.
+    else
+    regedit "$tempfile" 
+    fi
+  fi
+  
+  # Wait until regedit is finished and CSMT value is changed.
+  while [[ $current_state != $new_state ]]; do
+    sleep 2
+    GET_STATE
+  done
+  
+  # Print changes
+  echo ""$previous_state" -> "$new_state""
+  # Remove CSMT template (cleanup)
+  rm "$tempfile"
+}
+
+# Creates CSMT default key template
+CREATE_TEMPLATE() {
+  tempfile=$(mktemp)
+  cat <<-EOF > "$tempfile"
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"CSMT"="enabled"
+EOF
+}
+
+# Prints wineprefix and gets currents CSMT key.
+PREFIX() {
+  key="$WINEPREFIX"/user.reg
+  echo "$WINEPREFIX"
+  echo "[HKEY_CURRENT_USER\Software\Wine\Direct3D]"
+  GET_STATE
+  previous_state="$current_state"
+}
+
+# Gets the current value of CSMT key.
+GET_STATE() {
+  current_state=$(sed -n '/CSMT/p' "$key")
+}
+
+PREFIX
+CREATE_TEMPLATE
+CSMT_SWITCH
+exit 0

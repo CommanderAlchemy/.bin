@@ -11,7 +11,7 @@ fi
 
 echo Exporting Wineprefix
 export WINEPREFIX=~/.Games/steam
-export WINEDEBUG=-all,+fps
+export WINEDEBUG=-all
 export __GL_THREADED_OPTIMIZATIONS=0
 process="$(pgrep -x steam)"
 re='^[0-9]+$'
@@ -19,7 +19,8 @@ re='^[0-9]+$'
 if [[ $process =~ $re ]]; then
   kill -1 "$(pgrep -x steam)" || { echo "Could not kill process: "$(pgrep -x steam)"" && exit 1; }
 fi
-
+echo "$WINEPREFIX"
+sed -n '/CSMT/p' "$WINEPREFIX"/user.reg
 echo Launching Steam with --no-dwrite
-wine ~/.Games/steam/drive_c/Program\ Files\ \(x86\)/Steam/Steam.exe --no-dwrite &> ~/fps.txt 
+wine ~/.Games/steam/drive_c/Program\ Files/Steam/Steam.exe -no-dwrite #  &> /dev/null  #&> ~/fps.txt 
 exit 0
