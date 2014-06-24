@@ -3,13 +3,15 @@
 # WINE CSMT switch
 # Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
 #
-# Description
-# Looks for enabled|disabled in user.reg of wine then 
-# toggles correctly in tempfile and switches using regedit.
+# Description:
+# Looks for enabled|disabled CSMT key in user.reg of exported wineprefix.
+# Creates a template for CSMT key in /tmp and toggles depending on CSMT value.
 # If there is no key entry it will create new key with CSMT enabled
+# 
+# Usage:
+# WINEPREFIX=path-to-prefix csmtSwitch
 
 # Checks CSMT key and toggles
-
 CSMT_SWITCH() { 
   # If CSMT was enabled disable it.
   if [[ $previous_state == '"CSMT"="enabled"' ]]; then
