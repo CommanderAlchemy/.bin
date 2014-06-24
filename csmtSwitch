@@ -16,12 +16,12 @@ CSMT_SWITCH() {
   # If CSMT was enabled disable it.
   if [[ $previous_state == '"CSMT"="enabled"' ]]; then
     new_state=('"CSMT"="disabled"')
-    sed -i 's/^"CSMT".*/'$new_state'/' "$tempfile"
+    sed -i 's/^"CSMT".*/'"$new_state"'/' "$tempfile"
     regedit "$tempfile" 
     # If CSMT was disabled enable it.
     else if [[ $previous_state == '"CSMT"="disabled"' ]]; then
     new_state=('"CSMT"="enabled"')
-    sed -i 's/^"CSMT".*/'$new_state'/' "$tempfile"
+    sed -i 's/^"CSMT".*/'"$new_state"'/' "$tempfile"
     regedit "$tempfile" 
     # If there was no CSMT value key create it from template.
     else
