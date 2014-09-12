@@ -1,0 +1,45 @@
+#!/bin/bash
+# This rotares the kernel files for refind bootloader. 
+# Usefull when using UEFI and the archlinux kernel was more or less needed to
+# be moved. If this still applies to new installations is questionable.
+
+# Licence GPL
+# Author Artur Olech 
+# Justice @freenode #Archlinux
+
+error(){
+
+  case "$1" in
+
+    0)	echo "Error, cannot change directory to "$2""
+	error 2
+    ;;
+    1)	echo "Error cannot copy file "$2""
+	error 2
+    ;;
+    2)	echo "Aborting..."
+	exit 1
+    ;;
+    *)	echo "Unknown error"
+	error 2
+    ;;
+    
+  esac
+}
+
+copy(){
+  echo "moving "$1"..."
+  sudo cp "$1" efi/EFI/arch || error 1 "$1"
+}
+
+echo "[Rotating kernel]"
+if cd /boot; then
+  copy "initramfs-linux-fallback.img"
+  copy "initramfs-linux.img"
+  copy "vmlinuz-linux"
+else
+  error 0 "/boot"
+  
+fi
+echo "[Moving complete]"
+exit 0
