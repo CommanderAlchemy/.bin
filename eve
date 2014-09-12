@@ -219,9 +219,6 @@ for argz in "$@" ;do
 
         case $argz
         in
-                csmt) 
-		  winepath=.PlayOnLinux/wine/linux-x86/1.7.1-CSMT/bin/
-		  ;;
                 winetricks)
 		  winetricks
 		  ;;
