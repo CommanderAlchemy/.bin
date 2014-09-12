@@ -19,9 +19,18 @@ re='^[0-9]+$'
 if [[ $process =~ $re ]]; then
   kill -1 "$(pgrep -x steam)" || { echo "Could not kill process: "$(pgrep -x steam)"" && exit 1; }
 fi
+
 echo "$WINEPREFIX"
 sed -n '/CSMT/p' "$WINEPREFIX"/user.reg
 echo Launching Steam with --no-dwrite
-wine ~/.Games/steam/drive_c/Program\ Files/Steam/Steam.exe -no-dwrite &> /dev/null & # &> ~/fps.txt #
+
+if [[ "$1" == "-b" ]]; then
+        export WINEDEBUG=-all,+fps
+        wine ~/.Games/steam/drive_c/Program\ Files/Steam/Steam.exe -no-dwrite &> ~/fps.txt &
+        konsole -e tail -f ~/fps.txt &
+        else
+	wine ~/.Games/steam/drive_c/Program\ Files/Steam/Steam.exe -no-dwrite &> /dev/null &
+fi
+
 exit 0
 #~/.PlayOnLinux/wine/linux-x86/1.7.20/bin/
