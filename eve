@@ -13,23 +13,27 @@ record=false
 # nVidia _GL_THREADED_OPTIMIZATIONS
 optimize=false
 
-# Path to wine
-#winepath=/usr/bin/  Override to use custom wine.
+# Path to wine Override to use custom wine.
+# Default installation:
+#   winepath=/usr/bin/ 
+# Default PlayOnLinux:
+#   winepath=~/.PlayOnLinux/wine/linux-x86/
+#   winepath=~/.PlayOnLinux/wine/linux-amd64/
 winepath=/usr/bin/
-#winepath=~/.PlayOnLinux/wine/linux-x86/1.7.12/bin/
-#winepath=~/.PlayOnLinux/wine/linux-amd64/1.7.13/bin/
 
-
-#/home/commander/.PlayOnLinux/wine/linux-x86/1.7.8/bin/
-# Install paths!
+# Installation paths for:
+#   characters
+#	Creates all the character prefixes in dir making it less annoying to nuke if issues arrise.
+#   eve installation dir.
+#	Creates an installation prefix just for installer and game files.
 prefixpath=~/.Games/eve/char/
 installpath=~/.Games/eve/install/
 
-# Path where to install game (EVE-Online)
+# Dir's for the Tranquility (Live server) and Singularity (Test server)
 tranquilitypath="$installpath"tranquility/drive_c/Program\ Files/CCP/EVE/
 singularitypath="$installpath"singularity/drive_c/Program\ Files/CCP/EVE/
 
-# Usage
+# Help file.
 usage() {
 cat << EOF
 usage: $0 options
@@ -39,28 +43,24 @@ It includes:
 	     Installing and managing EVE - Online.
 	     Installing and managing wine prefixes.
 	     Injecting Simplescreenrecorder opengl shm code.
+	     Logging to ~/EVE/character.log
 	     
 	     
-
 OPTIONS:
 
    Prefixes
    -c [CHAR]      Char, what prefix to launch.		
-   -s [Server]	  Server, what server to use	DEFAULT=Tranquility	OPTIONS= Tranquility SISI
+   -s [Server]	  Server, what server to use	DEFAULT=Tranquility	OPTIONS=Tranquility, SISI
    
    Wine
-   -f [FLAG]	  Winedebug flag.			DEFAULT=-all		OPTIONS= check winehq
-   -r [RES]	  Resolution for the desktop. 	DEFAULT=fullscreen	OPTIONS= 1920x1080
+   -f [FLAG]	  Winedebug flag.		DEFAULT=-all (perf)	OPTIONS=See WineHQ
+   -r [RES]	  Resolution for the desktop. 	DEFAULT=fullscreen	OPTIONS=WxH (1920x1080)
    -k [PREFIX]	  Kill wineprefix
    
    Launcher
    -L 		  Launches eve with Launcher instead.
    
-   Directly
-   -u [username]  Launches ExeFile.exe directly with username and password.
-   -p [password]
-   
-   Recordmydesktop
+   Simplescreenrecorder
    -R [CODE]	Simplescreenrecorder shm code.	Check Simplescreenrecorder opengl settings for code
    
    Install
@@ -69,6 +69,11 @@ OPTIONS:
    
    Help
    -h      This help
+   
+Example:
+  eve -i eveplayer 		# To install eveplayer prefix
+  eve -c eveplayer -L		# To launch eveplayer with eve Launcher
+  eve -c eveplayer -s SISI	# To launch eveplayer with eve Launcher for SISI (Test Server)
    
    
 EOF
@@ -114,7 +119,7 @@ echo "Creating Dir"
 mkdir -p "$prefixpath" 
 cd "$prefixpath" || echo "error finding "$prefixpath""
 mv "$char" "$char".old || echo "no existing, not backing up"
-winearch=win32 WINEPREFIX="$prefixpath""$char" winetricks vcrun2005 vcrun2008 vcrun2010 corefonts win7
+WINEARCH=win32 WINEPREFIX="$prefixpath""$char" winetricks vcrun2005 vcrun2008 vcrun2010 corefonts win7
 exit 0
 }
 
@@ -125,10 +130,10 @@ cd "$installpath" || echo "error finding "$installpath""
 wget -O installer.exe http://content.eveonline.com/663778/EVE_Online_Installer_663778.exe || echo "error could not find installer on EVE-Online Website, Update link location in script line 117"
 if [[ "$server" == "tranquility" ]]; then
   mkdir "$installpath"tranquility || echo "error while creating tranquility path" && "echo test and"
-  winearch=win32 WINEPREFIX="$installpath"tranquility wine installer.exe
+  WINEARCH=win32 WINEPREFIX="$installpath"tranquility wine installer.exe
   else
   mkdir "$installpath"singularity || echo "error while creating singularity path"
-  winearch=win32 WINEPREFIX="$installpath"singularity wine installer.exe
+  WINEARCH=win32 WINEPREFIX="$installpath"singularity wine installer.exe
 fi
 exit 0
 }
@@ -204,7 +209,7 @@ do
 		
 		?|*)
 		  usage
-		  exit 1
+		  exit 0
 		  ;;
 
         esac
@@ -266,6 +271,10 @@ fi
 if $optimize; then
   export GL_THREADED_OPTIMIZATIONS=1
 fi
+
+# Display if Command Stream (CSMT) is enabled.
 sed -n '/CSMT/p' "$WINEPREFIX"/user.reg
+
+# Launch!
 WINEDEBUG="$flag" "$winepath"wine explorer /desktop="EVE-"$char"@"$server"","$resolution" "$install" &>>~/EVE/"$char".log&
 exit 0
