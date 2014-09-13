@@ -9,6 +9,7 @@ server=Tranquility
 flag=-all
 resolution=0x0
 record=false
+WINEARCH=win32
 
 # nVidia _GL_THREADED_OPTIMIZATIONS
 optimize=false
@@ -120,7 +121,7 @@ echo "Creating Dir"
 mkdir -p "$prefixpath" 
 cd "$prefixpath" || echo "error locating "$prefixpath""
 mv "$char" "$char".old || echo "no existing, not backing up"
-WINEARCH=win32 WINEPREFIX="$prefixpath""$char" winetricks vcrun2005 vcrun2008 vcrun2010 corefonts win7
+WINEARCH="$WINEARCH" WINEPREFIX="$prefixpath""$char" winetricks vcrun2005 vcrun2008 vcrun2010 corefonts win7
 exit 0
 }
 
@@ -130,9 +131,9 @@ mkdir -p "$installpath"
 cd "$installpath" || echo "error locating "$installpath""
 wget -O installer.exe "http://content.eveonline.com//825275/EVE_Online_Installer_825275.exe" || echo "error could not find installer on EVE-Online Website, Update link location in script line 130"
 if [[ "$server" == "tranquility" ]]; then
-  WINEARCH=win32 WINEPREFIX="$installpath"tranquility wine installer.exe
+  WINEARCH="$WINEARCH" WINEPREFIX="$installpath"tranquility wine installer.exe
   else
-  WINEARCH=win32 WINEPREFIX="$installpath"singularity wine installer.exe
+  WINEARCH="$WINEARCH" WINEPREFIX="$installpath"singularity wine installer.exe
 fi
 exit 0
 }
