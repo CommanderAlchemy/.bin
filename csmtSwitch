@@ -25,6 +25,7 @@ CSMT_SWITCH() {
     regedit "$tempfile" 
     # If there was no CSMT value key create it from template.
     else
+    new_state=('"CSMT"="enabled"')
     regedit "$tempfile" 
     fi
   fi
