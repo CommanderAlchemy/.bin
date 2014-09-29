@@ -3,16 +3,41 @@
 # EVE Online Launcher
 # Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
 
-# Default Values
+# TODO Get rsync to handle backups of prefixes.
+# TODO Always rotate backup of prefix with date. (so it wont overwrite an old one.
+
+################
+# DEFAULT VAULES
+################
+# launcher: 
+#   Default value if you want to launch with the EVE - Online Launcher.
+#
+# server:
+#   Default value if you want to launch and connect to tranquility/singularity server.
+#
+# resolution:
+#   Default value for what resolution you want to launch the game in. (Wine virtual desktop)
+#
+# record: 
+#   Default value if you want to record, use the flag instead with the SHM code.
+#
+# WINEARCH: 
+#   What wine architecture. Remember that winetricks does not support properly x86_64 and some other issues may arrise.
+#
+# recreate:
+#   If set to true, and you use [-i] and there is a previous prefix it will copy the EVE - Online settings to new one without question.
+#
+# optimize:
+#   nVidia __GL_THREADED_OPTIMIZATIONS, enables multithreaded OpenGL in the driver. Though if you run WINE-CSMT it may lower the performance.
 launcher=false
-server=Tranquility
+server=tranquility
 flag=-all
 resolution=0x0
 record=false
 WINEARCH=win32
-
-# nVidia _GL_THREADED_OPTIMIZATIONS
+recreate=false
 optimize=false
+
 
 # Path to wine Override to use custom wine.
 # Default installation:
@@ -20,19 +45,21 @@ optimize=false
 # Default PlayOnLinux:
 #   winepath=~/.PlayOnLinux/wine/linux-x86/
 #   winepath=~/.PlayOnLinux/wine/linux-amd64/
-winepath=/usr/bin/
+wine_path=/usr/bin/
+
 
 # Installation paths for:
 #   characters
 #	Creates all the character prefixes in dir making it less annoying to nuke if issues arrise.
 #   eve installation dir.
 #	Creates an installation prefix just for installer and game files.
-prefixpath=~/.Games/eve/char/
-installpath=~/.Games/eve/install/
+prefix_path=~/.Games/eve/char/
+install_path=~/.Games/eve/install/
+
 
 # Dir's for the Tranquility (Live server) and Singularity (Test server)
-tranquilitypath="$installpath"tranquility/drive_c/Program\ Files/CCP/EVE/
-singularitypath="$installpath"singularity/drive_c/Program\ Files/CCP/EVE/
+tranquility_path="$install_path"tranquility/drive_c/Program\ Files/CCP/EVE/
+singularity_path="$install_path"singularity/drive_c/Program\ Files/CCP/EVE/
 
 # Help file.
 usage() {
@@ -50,8 +77,8 @@ It includes:
 OPTIONS:
 
    Prefixes
-   -c [CHAR]      Char, what prefix to launch.		
-   -s [Server]	  Server, what server to use	DEFAULT=Tranquility	OPTIONS=Tranquility, SISI
+   -c [PREFIX]      Char, what prefix to launch.		
+   -s [Server]	  Server, what server to use	DEFAULT=tranquility	OPTIONS=tranquility, sisi
    
    Wine
    -f [FLAG]	  Winedebug flag.		DEFAULT=-all (perf)	OPTIONS=See WineHQ
@@ -66,21 +93,20 @@ OPTIONS:
    
    Install
    -i [PREFIX]	Reinstall prefix for char	Into: ~/.Games/eve/char/[PREFIX]
-   -I Use -s to define (Live or Test server)
+   -I Use -s before to define (Live or Test server)
    
    Help
    -h      This help
    
 Example:
-  eve -s SISI -I		# To install EVE - Online into a prefix for Test Server
+  eve -s sisi -I		# To install EVE - Online into a prefix for Test Server
   eve -i eveplayer 		# To install eveplayer prefix
   eve -c eveplayer -L		# To launch eveplayer with eve Launcher
-  eve -c eveplayer -s SISI	# To launch eveplayer with eve Launcher for SISI (Test Server)
+  eve -c eveplayer -s sisi	# To launch eveplayer with eve Launcher for sisi (Test Server)
    
    
 EOF
 }
-#set -x
 # Wineserver killer
 killPrefix() {
 
@@ -117,29 +143,59 @@ wineconf() {
 
 # Install prefix for EVE - Online
 installprefix() {
-echo "Creating Dir"
-mkdir -p "$prefixpath" 
-cd "$prefixpath" || echo "error locating "$prefixpath""
-mv "$char" "$char".old || echo "no existing, not backing up"
-WINEARCH="$WINEARCH" WINEPREFIX="$prefixpath""$char" winetricks vcrun2005 vcrun2008 vcrun2010 corefonts win7
+
+# Path to the eve - configuration files.
+settings_path=/drive_c/users/"$USER"/Local\ Settings/Application\ Data/CCP/EVE/z_home_"$USER"_.games_eve_install_"$server"_drive_c_program_files_ccp_eve_"$server"
+backup=true
+
+# Prefix directory for all EVE - Online prefixes.
+echo "Creating common directory ""$prefix_path"
+mkdir -p "$prefix_path"
+cd "$prefix_path" || { echo "error locating directory "$prefix_path""; exit 1; }
+
+# Backup existing prefix if there is with the same name.
+mv "$char" "$char".old || { echo "no existing prefix found, not backing up"; backup=false; }
+
+# Create prefix
+echo "Creating prefix directory ""$prefix_path""$char"
+echo ""
+WINEARCH="$WINEARCH" WINEPREFIX="$prefix_path""$char" winetricks vcrun2005 vcrun2008 vcrun2010 corefonts win7
+echo ""
+
+# If there was previously an prefix
+if $backup; then
+  # If recreate is not set to true ask user
+  if ! $recreate; then
+    read -p "Do you want to re-create EVE - Online settings from previous prefix [Y/n]? " answer
+    case $answer in
+	# Copy previous settings directory to new prefix.
+	[Yy]* ) { echo "Recreating EVE - Online settings from the previous prefix."; mkdir -p "$prefix_path""$char""$settings_path"; cp -r "$prefix_path""$char".old"$settings_path"/settings "$prefix_path""$char""$settings_path"; };;
+	[Nn]* ) exit 0;;
+	* ) exit 0;;
+    esac
+  fi
+fi
+echo ""
+echo "Inserting CSMT = \"Enabled\" into new prefix using csmtSwitch" 
+WINEPREFIX="$prefix_path""$char" csmtSwitch || { echo "csmtSwitch not found, ignoring to set CSMT=\"Enabled\""; }
 exit 0
 }
 
 installeve() {
-echo "Creating Dir "$installpath""
-mkdir -p "$installpath"
-cd "$installpath" || echo "error locating "$installpath""
-wget -O installer.exe "http://content.eveonline.com//825275/EVE_Online_Installer_825275.exe" || echo "error could not find installer on EVE-Online Website, Update link location in script line 130"
+echo "Creating Dir "$install_path""
+mkdir -p "$install_path"
+cd "$install_path" || echo "error locating "$install_path""
+wget -O installer.exe "http://content.eveonline.com//825275/EVE_Online_Installer_825275.exe" || echo "error could not find installer on EVE-Online Website, Update link location in script line 188"
 if [[ "$server" == "tranquility" ]]; then
-  WINEARCH="$WINEARCH" WINEPREFIX="$installpath"tranquility wine installer.exe
+  WINEARCH="$WINEARCH" WINEPREFIX="$install_path"tranquility wine installer.exe
   else
-  WINEARCH="$WINEARCH" WINEPREFIX="$installpath"singularity wine installer.exe
+  WINEARCH="$WINEARCH" WINEPREFIX="$install_path"singularity wine installer.exe
 fi
 exit 0
 }
 
 
-# If no arguments passed exit
+# If no arguments passed show help and exit
 if [ "$#" == "0" ]; then 
   echo ""
   echo "[No Arguments Given]"
@@ -160,7 +216,7 @@ do
                 
                 c) 
 		  char=$OPTARG
-		  export WINEPREFIX="$prefixpath""$char"
+		  export WINEPREFIX="$prefix_path""$char"
 		  ;;
                 
                 s) 
@@ -232,23 +288,23 @@ done
 if $launcher; then
 
   #Launcher
-  if [[ "$server" == "Tranquility" ]]; then
-    # Launch Launcher + Tranquility
-    install="$tranquilitypath"eve.exe
+  if [[ "$server" == "tranquility" ]]; then
+    # Launch Launcher + tranquility
+    install="$tranquility_path"eve.exe
     else
-    # Launch Launcher + Sisi
-    install="$singularitypath"eve.exe\ /server:Singularity
+    # Launch Launcher + sisi
+    install="$singularity_path"eve.exe\ /server:Singularity
   fi
   
   else
   
   #Directly
-  if [[ "$server" == "Tranquility" ]]; then
-    # Launch Directly + Tranquility
-    install="$tranquilitypath"bin/ExeFile.exe
+  if [[ "$server" == "tranquility" ]]; then
+    # Launch Directly + tranquility
+    install="$tranquility_path"bin/ExeFile.exe
     else
-    # Launch Directly + Sisi
-    install="$singularitypath"bin/ExeFile.exe\ /server:Singularity
+    # Launch Directly + sisi
+    install="$singularity_path"bin/ExeFile.exe\ /server:Singularity
   fi
 fi
 
@@ -256,7 +312,7 @@ fi
 
 # IF Record
 if $record; then
-  # Record, Inject Recordmydesktop
+  # Record, Inject Simplescreenrecorder + SHM
   export LD_PRELOAD="libssr-glinject.so libpthread.so.0 libGL.so.1"
   export SSR_GLINJECT_SHM="$shm"
   else
@@ -273,5 +329,5 @@ fi
 sed -n '/CSMT/p' "$WINEPREFIX"/user.reg
 
 # Launch!
-WINEDEBUG="$flag" "$winepath"wine explorer /desktop="EVE-"$char"@"$server"","$resolution" "$install" &>>~/EVE/"$char".log&
+WINEDEBUG="$flag" "$wine_path"wine explorer /desktop="EVE-"$char""@""$server"","$resolution" "$install" &>>~/EVE/"$char".log&
 exit 0
