@@ -14,7 +14,7 @@
 # Checks CSMT key and toggles
 CSMT_SWITCH() { 
   # If CSMT was enabled disable it.
-  if [[ $previous_state == '"CSMT"="enabled"' ]]; then
+  if [[ "$previous_state" == '"CSMT"="enabled"' ]]; then
     new_state=('"CSMT"="disabled"')
     sed -i 's/^"CSMT".*/'"$new_state"'/' "$tempfile"
     regedit "$tempfile" 
@@ -31,7 +31,7 @@ CSMT_SWITCH() {
   fi
   
   # Wait until regedit is finished and CSMT value is changed.
-  while [[ $current_state != $new_state ]]; do
+  while [[ "$current_state" != "$new_state" ]]; do
     sleep 2
     GET_STATE
   done
@@ -44,7 +44,7 @@ CSMT_SWITCH() {
 
 # Creates CSMT default key template
 CREATE_TEMPLATE() {
-  tempfile=$(mktemp)
+  tempfile="$(mktemp)"
   cat <<-EOF > "$tempfile"
 [HKEY_CURRENT_USER\Software\Wine\Direct3D]
 "CSMT"="enabled"
@@ -62,7 +62,7 @@ PREFIX() {
 
 # Gets the current value of CSMT key.
 GET_STATE() {
-  current_state=$(sed -n '/CSMT/p' "$key")
+  current_state="$(sed -n '/CSMT/p' "$key")"
 }
 
 PREFIX
