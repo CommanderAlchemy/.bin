@@ -34,9 +34,17 @@ copy(){
 
 echo "[Rotating kernel]"
 if cd /boot; then
+
+  echo "Arch"
   copy "initramfs-linux-fallback.img"
   copy "initramfs-linux.img"
   copy "vmlinuz-linux"
+
+ # echo "Arch-ck"
+ # copy "initramfs-linux-ck-fallback.img"
+ # copy "initramfs-linux-ck.img"
+ # copy "vmlinuz-linux-ck"
+
 else
   error 0 "/boot"
   
