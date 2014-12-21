@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# Shows system information in a fancy fashion.
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+source ~/.bin/watchgpu
+source ~/.bin/watcher
+
+QuerySystem () {
+  # CPU
+  cpu_temp=$(sensors | awk '/CPU Temp/ {print $3}')
+  socket_temp=$(sensors | awk '/Socket Temp/ {print $3}')
+  cpu_vcore=$(sensors | awk '/Vcore/ {print $2 " V " $12}')
+  
+  # MotherBoard
+  mb_temp=$(sensors | awk '/M\/B/ {print $1 " " $2 " " $3}')
+  
+  # System
+  system_12V=$(sensors | awk '/+12V:/ {print $2}')
+  system_5V=$(sensors | awk '/+5V:/ {print $2}')
+  system_3V=$(sensors | awk '/+3.3V/ {print $2;exit}')
+  system_VDDA=$(sensors | awk '/VDDA/ {print $2}')
+  system_DRAM=$(sensors | awk '/DRAM/ {print $2}')
+  
+  # Fans
+  cpu_fan=$(sensors | awk '/CPU Fan/ {print $0;exit}')
+  cpu_fan_opt=$(sensors | awk '/CPU Fan opt/ {print $0}')
+  chassi_fan=$(sensors | awk '/Chassis/ {print $0}')
+  
+  echo ""
+  echo -e "\e[1;31m(AMD FX8350)\e[0m"
+  echo -e "\tCore:	   $cpu_temp"
+  echo -e "\tSocket:	   $socket_temp"
+  echo -e "\tVCore:	   $cpu_vcore"
+  echo ""
+  
+  echo ""
+  echo -e "\e[1;31m(Sabertooth AM3+ 990FX)\e[0m"
+  echo -e "\t$mb_temp"
+  echo ""
+  echo -e "\tVoltages"
+  echo -e "\t+12V: 	   $system_12V"
+  echo -e "\t+5V: 	   $system_5V"
+  echo -e "\t+3V:   	   $system_3V"
+  echo -e "\tVDDA:	   $system_VDDA"
+  echo -e "\tDRAM:	   $system_DRAM"
+  echo ""
+  echo -e "\tFans"
+  echo -e "\t$cpu_fan"
+  echo -e "\t$cpu_fan_opt"
+  echo -e "\t$chassi_fan"
+  echo ""
+}
+
+watcher 1 "queryGPU; QuerySystem | egrep \"ALARM|$\" --color=always; sudo cpupower monitor -m Mperf | cut -d\| -f1,4"
+
+

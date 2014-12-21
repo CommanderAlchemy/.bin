@@ -5,4 +5,8 @@
 
 source ~/.bin/watcher
 watcher 1 "sensors | egrep \"ALARM|$\" --color=always; sudo cpupower monitor -m Mperf | cut -d\| -f1,4"
-#watch -n 1 -t 
+
+
+
+
+

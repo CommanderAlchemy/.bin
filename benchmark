@@ -1,0 +1,54 @@
+#!/bin/bash
+
+queryGPU() {
+  _gpu_id="[gpu:0]"
+  _utilization=$(nvidia-settings -t -q "$_gpu_id"/GPUUtilization | tr ',' '\n')
+  _core_temp=$(nvidia-settings -t -q "$_gpu_id"/GPUCoreTemp)
+
+  _used_memory=$(nvidia-settings -t -q "$_gpu_id"/UsedDedicatedGPUMemory)
+  _total_memory=$(nvidia-settings -t -q "$_gpu_id"/UsedDedicatedGPUMemory)
+
+  _gpu_usage=$(echo "$_utilization" | grep graphics | sed 's/[^0-9]//g')
+  _mem_usage=$(echo "$_utilization" | grep memory | sed 's/[^0-9]//g')
+  _pci_usage=$(echo "$_utilization" | grep PCIe | sed 's/[^0-9]//g')
+  echo ""
+  echo -e "\tRunning at : $_gpu_usage%"
+  echo -e "\tCurrent temperature : $_core_temp°C"
+  echo -e "\tMemory usage : $_used_memory MB/$_total_memory MB"
+  echo -e "\tMemory bandwidth usage : $_mem_usage%"
+  echo -e "\tPCIe bandwidth usage : $_pci_usage%"
+  echo ""
+}
+
+
+# Create tempfile for process id
+pids=~/pids
+
+# Create renders
+for i in {1..10} 
+  do 
+    glxspheres64 &> /dev/null &
+    echo $! >> "$pids"
+    queryGPU
+    sleep 5
+  done
+
+# Wait x sekonds
+queryGPU
+sleep 10
+queryGPU
+echo "10 seconds left"
+sleep 10
+queryGPU
+echo "Benchmark finished"
+
+# Terminate render process
+for i in {1..10}
+  do
+    kill $(sed -n "$i"'{p;q}' pids)
+    sleep 1
+  done
+queryGPU
+
+# Cleanup 
+rm "$pids"

@@ -15,7 +15,7 @@ if [[ "$1" == "" ]]; then
     echo "Fourth    param: urgency      default: normal"
 fi
     
-send () {
+sendmsg () {
     # Message
     if [[ "$1" == "" ]]; then
         msg="null"
@@ -45,5 +45,5 @@ send () {
     
     notify-send "$app" --app-name="$app" --icon="$icon" --urgency="$urgency" "$msg"
 }
-send "$1" "$2" "$3" "$4"
-exit 0
+#sendmsg "$1" "$2" "$3" "$4"
+

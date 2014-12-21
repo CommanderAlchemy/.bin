@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Origin
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+#source ~/.bin/sendmsg
+
+#sendmsg "Origin Launched" "Origin Launcher" "9AD6_Origin.0"
+export WINEPREFIX=/media/Downloads/Origin
+export WINEDEBUG=-all
+LD_PRELOAD=""
+wine explorer /desktop=origin,1920x1080 /media/Downloads/Origin/drive_c/Program\ Files/Origin/Origin.exe &>>~/origin.log&
+exit 0

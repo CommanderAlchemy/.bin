@@ -2,4 +2,34 @@
 #
 # Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
 
-watch -n 1 -t -c "aticonfig --od-getclock && aticonfig --od-gettemperature && aticonfig --pplib-cmd 'get fanspeed 0' && sensors | grep temp"
+queryGPU() {
+  _gpu_id="[gpu:0]"
+  _gpu_name=$(nvidia-settings -q gpus | awk '/GeForce/ {print $3 " " $4 " " $5}')
+  _utilization=$(nvidia-settings -t -q "$_gpu_id"/GPUUtilization | tr ',' '\n')                                                                                                                                                                                                   
+  _core_temp=$(nvidia-settings -t -q "$_gpu_id"/GPUCoreTemp)                                                                                                                                                                                                                      
+
+                                                                                                                                                                                                     
+  _total_memory=$(nvidia-settings -t -q "$_gpu_id"/TotalDedicatedGPUMemory)
+  _used_memory=$(nvidia-settings -t -q "$_gpu_id"/UsedDedicatedGPUMemory)
+
+  _gpu_usage=$(echo "$_utilization" | grep graphics | sed 's/[^0-9]//g')                                                                                                                                                                                                          
+  _mem_usage=$(echo "$_utilization" | grep memory | sed 's/[^0-9]//g')                                                                                                                                                                                                            
+  _pci_usage=$(echo "$_utilization" | grep PCIe | sed 's/[^0-9]//g')
+  
+  _gpu_freq=($(nvidia-settings -t -q [gpu:0]/GPUCurrentClockFreqs | sed 's/,/ /g'))
+  _gpu_current=($(nvidia-settings -t -q [gpu:0]/GPUCurrentClockFreqsString | sed 's/,/ /g'))
+  _gpu_mem_transfer=(${_gpu_current[8]#*=})
+  _gpu_current_voltage=$(nvidia-settings -t -q [gpu:0]/GPUCurrentCoreVoltage)
+  
+  echo ""
+  echo -e "\e[1;31m$_gpu_name\e[0m"
+  echo -e "\tGPU usage: $_gpu_usage%"
+  echo -e "\tMEM usage: $((100*$_used_memory/$_total_memory))% ($_used_memory/$_total_memory MB)"
+  echo -e "\tCore Temp: $_core_temp°C"
+  echo ""
+  echo -e "\tBandwidth"	"\tFrequency" "\t\tVoltage"
+  echo -e "\tMEM:       $_mem_usage%\tGPU:       ${_gpu_freq[0]} MHz\tGPU Core:	"$(bc <<< "scale=3; $_gpu_current_voltage/1000000")"V"
+  echo -e "\tPCIe:      $_pci_usage%\tMemory:    $_gpu_mem_transfer MHz"
+  echo ""
+}
+queryGPU

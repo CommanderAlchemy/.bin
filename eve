@@ -2,7 +2,7 @@
 #
 # EVE Online Launcher
 # Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
-
+source ~/.bin/sendmsg
 # TODO Get rsync to handle backups of prefixes.
 # TODO Always rotate backup of prefix with date. (so it wont overwrite an old one.
 
@@ -290,10 +290,11 @@ if $launcher; then
   #Launcher
   if [[ "$server" == "tranquility" ]]; then
     # Launch Launcher + tranquility
-    install="$tranquility_path"eve.exe
+    install="$tranquility_path""eve.exe"
     else
     # Launch Launcher + sisi
-    install="$singularity_path"eve.exe\ /server:Singularity
+    install="$singularity_path""eve.exe"
+    server_param="/server:Singularity"
   fi
   
   else
@@ -301,10 +302,11 @@ if $launcher; then
   #Directly
   if [[ "$server" == "tranquility" ]]; then
     # Launch Directly + tranquility
-    install="$tranquility_path"bin/ExeFile.exe
+    install="$tranquility_path""bin/ExeFile.exe"
     else
     # Launch Directly + sisi
-    install="$singularity_path"bin/ExeFile.exe\ /server:Singularity
+    install="$singularity_path""bin/ExeFile.exe"
+    server_param="/server:Singularity"
   fi
 fi
 
@@ -327,7 +329,8 @@ fi
 
 # Display if Command Stream (CSMT) is enabled.
 sed -n '/CSMT/p' "$WINEPREFIX"/user.reg
-
+set -x
 # Launch!
-WINEDEBUG="$flag" "$wine_path"wine explorer /desktop="EVE-"$char""@""$server"","$resolution" "$install" &>>~/EVE/"$char".log&
+sendmsg "EVE - Online {$char]" "EVE-Launcher" "2761_launcher.0"
+WINEDEBUG="$flag" "$wine_path"wine explorer /desktop="EVE-"$char""@""$server"","$resolution" "$install" $server_param &>>~/EVE/"$char".log&
 exit 0
