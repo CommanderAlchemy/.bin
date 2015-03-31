@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# Description:
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+konsole -e watchsys
+konsole -e dmesg --follow
+konsole -e glxgears
+konsole -e mprime -t

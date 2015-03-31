@@ -24,11 +24,11 @@ QuerySystem () {
   
   # Fans
   cpu_fan=$(sensors | awk '/CPU Fan/ {print $0;exit}')
-  cpu_fan_opt=$(sensors | awk '/CPU Fan opt/ {print $0}')
+  cpu_fan_opt=$(sensors | awk '/CPU PUMP/ {print $0}')
   chassi_fan=$(sensors | awk '/Chassis/ {print $0}')
   
   echo ""
-  echo -e "\e[1;31m(AMD FX8350)\e[0m"
+  echo -e "\e[1;31m(AMD FX9590)\e[0m"
   echo -e "\tCore:	   $cpu_temp"
   echo -e "\tSocket:	   $socket_temp"
   echo -e "\tVCore:	   $cpu_vcore"
