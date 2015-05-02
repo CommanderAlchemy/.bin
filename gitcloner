@@ -1,7 +1,8 @@
 #!/bin/bash
 #
 # Clones repos from user at github
-set -x
+# set -x
+
 # Temp
 tmpFile=$(mktemp ${0}.XXX)
 
@@ -13,12 +14,11 @@ username=$1
 
 # Access data
 curl "https://api.github.com/search/repositories?q=user:"${username} -o $tmpFile
-cat $tmpFile
 
-# Parse data
+# Get array size
 array_size=$(jshon -e items -l < $tmpFile)
 
-for (( i=0; i<=$array_size; i++))
+for (( i=0; i<$array_size; i++))
   do
   name=$(jshon -e items -e $i -e name < $tmpFile | sed 's/\"//g')
   url=$(jshon -e items -e $i -e clone_url < $tmpFile | sed 's/[\\"]//g')
@@ -26,5 +26,5 @@ for (( i=0; i<=$array_size; i++))
   done
 
 # Cleanup
-rm tmpFile
+rm $tmpFile
 exit 0
