@@ -10,7 +10,7 @@ tmpFile=$(mktemp ${0}.XXX)
 mkdir -p ~/myclones
 
 # User
-username=$1
+username=${1}
 
 # Access data
 curl "https://api.github.com/search/repositories?q=user:"${username} -o $tmpFile
@@ -22,7 +22,7 @@ for (( i=0; i<$array_size; i++))
   do
   name=$(jshon -e items -e $i -e name < $tmpFile | sed 's/\"//g')
   url=$(jshon -e items -e $i -e clone_url < $tmpFile | sed 's/[\\"]//g')
-  git clone $url ~/myclones/${name}/
+  git clone ${url} ~/myclones/${name}/
   done
 
 # Cleanup
