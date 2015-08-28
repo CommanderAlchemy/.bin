@@ -38,6 +38,7 @@ __Logs__
 
 __Workaround__
 * Add user & group by ___AnAkkk (AnAkkk) - Thursday, 27 August 2015, 23:26 GMT___
+
   ```
   groupadd -r nm-openvpn
   useradd -r -g nm-openvpn -d / -s /sbin/nologin -c "Default user for running openvpn spawned by NetworkManager" nm-openvpn
@@ -45,6 +46,7 @@ __Workaround__
 
 # 2. Pulseaudio
 * Stop volume get lowered during events (___comment cork___)
+
   ```
   /etc/pulse/default.pa
 
@@ -52,6 +54,7 @@ __Workaround__
   # load-module module-role-cork
   ```
 * Stop Master volume get adjusted by applications and spit to 100% Volume :anger:
+
   ```
   /etc/pulse/daemon.conf
 
@@ -60,6 +63,7 @@ __Workaround__
 
 # 3. KDE Journal Spam
 * KDE spamming journal (___add debug=false___)
+
   ```
   /usr/bin/startkde
 
