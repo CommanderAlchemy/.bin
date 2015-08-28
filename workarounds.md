@@ -1,7 +1,14 @@
-# Current workarounds
-1. [NetworkManager OpenVPN] [1]
-2. [Pulseaudio] [2]
-3. [KDE Spamming Journal] [3]
+# Workarounds
+__Icons__
+* :white_check_mark: - Fixed Uppstream
+* :o: - Workaround works.
+* :x: - Still an issue
+* :anger: - Massive pain in balls
+____
+
+1. [ :o: NetworkManager OpenVPN] [1]
+2. [ :o: Pulseaudio] [2]
+3. [ :o: KDE Spamming Journal] [3]
 [1]: #1.network-manager
 [2]: #2-pulseaudio
 [3]: #3-kde-journal-spam
@@ -38,7 +45,7 @@ useradd -r -g nm-openvpn -d / -s /sbin/nologin -c "Default user for running open
   ### Cork music/video streams when a phone stream is active
   # load-module module-role-cork
   ```
-* Stop Master volume get adjusted by applications
+* Stop Master volume get adjusted by applications and spit to 100% Volume :anger:
   ```
   /etc/pulse/daemon.conf
 
