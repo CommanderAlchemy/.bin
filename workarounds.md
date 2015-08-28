@@ -26,6 +26,7 @@ ____
 
 __Logs__
 * [Aug 28 03:52:40 Maxwell NetworkManager](http://codepad.org/pd9qW3sk)
+
   ```
   Aug 28 03:52:40 Maxwell NetworkManager[390]: (nm-openvpn-service:2352): nm-openvpn-WARNING **: (nm-openvpn-service.c:1269):nm_openvpn_start_openvpn_binary: runtime check failed: (priv->mgt_path == NULL)
   Aug 28 03:52:40 Maxwell NetworkManager[390]: <info>  VPN plugin state changed: starting (3)
