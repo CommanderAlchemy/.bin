@@ -9,7 +9,7 @@ ____
 1. [ :o: NetworkManager OpenVPN] [1]
 2. [ :o: Pulseaudio] [2]
 3. [ :o: KDE Spamming Journal] [3]
-[1]: #1.network-manager
+[1]: #1-network-manager
 [2]: #2-pulseaudio
 [3]: #3-kde-journal-spam
 
