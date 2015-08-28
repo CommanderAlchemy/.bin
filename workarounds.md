@@ -37,7 +37,7 @@ __Logs__
   ```
 
 __Workaround__
-* Add user & group by ___AnAkkk (AnAkkk) - Thursday, 27 August 2015, 23:26 GMT___
+* Add user & group by ___AnAkkk (AnAkkk) - Thursday, 27 August 2015, 23:26 GMT___ [:information_source:](https://bugs.archlinux.org/task/46124#comment138476)
 
   ```
   groupadd -r nm-openvpn
