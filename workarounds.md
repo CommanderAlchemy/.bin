@@ -2,9 +2,9 @@
 1. [NetworkManager OpenVPN] [1]
 2. [Pulseaudio] [2]
 3. [KDE Spamming Journal] [3]
-[1]: #1-Network-Manager
-[2]: #2-Pulseaudio
-[3]: #3-KDE-Journal-Spam
+[1]: #1.network-manager
+[2]: #2-pulseaudio
+[3]: #3-kde-journal-spam
 
 #### <br>
 
