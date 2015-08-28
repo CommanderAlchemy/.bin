@@ -1,6 +1,6 @@
 # Workarounds
 __Icons__
-* :white_check_mark: - Fixed Uppstream
+* :white_check_mark: - Fixed Upstream
 * :o: - Workaround works.
 * :x: - Still an issue
 * :anger: - Massive pain in balls
