@@ -1,10 +1,11 @@
 # Workarounds
 __Icons__
-* :white_check_mark: - Fixed Upstream
+* :white_check_mark: - Fixed upstream.
 * :o: - Workaround works.
-* :x: - Still an issue
-* :anger: - Massive pain in balls
+* :x: - Still an issue.
+* :anger: - Massive pain in balls.
 ____
+
 
 1. [ :o: NetworkManager OpenVPN] [1]
 2. [ :o: Pulseaudio] [2]
