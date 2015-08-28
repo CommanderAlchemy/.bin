@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # Left		Center		Right
-# DFP11 	DFP10		DFP5
-# DVI-1         DVI-0           DisplayPort-1
+# DFP11 	DFP10		  DFP5
+# DVI-1   DVI-0     DisplayPort-1
 #
 # Reload the motherfucking displays
 # Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
@@ -12,19 +12,19 @@ xrandr --auto
 
 # Sending the wrong and correct values for the tripplemonitor setup
 if [[ "$1" = "" ]]; then {
-  echo "Assuming Catalyst"                           
-  xrandr --output DFP11 --right-of DFP10            		# Destroy current setup (mouse corruption fix)
-  
-  xrandr --output DFP10 --primary				# Set Correct values for Catalyst 
+  echo "Assuming Catalyst"
+  xrandr --output DFP11 --right-of DFP10	# Destroy current setup (mouse corruption fix)
+
+  xrandr --output DFP10 --primary				  # Set Correct values for Catalyst
   xrandr --output DFP10 --left-of DFP5
-  xrandr --output DFP11 --left-of DFP10 
+  xrandr --output DFP11 --left-of DFP10
 }
 else
 {
   echo "Assuming Radeon"
-  xrandr --output DVI-1 --right-of DVI-1			# Destroy current setup (mouse corruption fix)
-  
-  xrandr --output DVI-0 --primary				# Set Correct values for Radeon
+  xrandr --output DVI-1 --right-of DVI-1	# Destroy current setup (mouse corruption fix)
+
+  xrandr --output DVI-0 --primary				  # Set Correct values for Radeon
   xrandr --output DVI-1 --left-of DVI-1
   xrandr --output DisplayPort-1 --right-of DVI-1
 }
