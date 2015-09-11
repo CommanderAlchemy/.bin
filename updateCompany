@@ -2,7 +2,7 @@
 
 # Configuration
 root="/srv/http"
-app="MysStund"
+app="company"
 dev_path="/home/commander/Projects"
 
 # Font
@@ -24,7 +24,7 @@ echo -e "$red$bold[Removing old $app dir...]$reset"
 sudo rm -r --preserve-root "$root"/"$app"
 
 echo -e "$red$bold[Moving files from development dir...]$reset"
-sudo cp -R "$dev_path"/"$app"/"$app" "$root"
+sudo cp -R "$dev_path"/"$app" "$root"
 
 echo -e "$red$bold[Updating permissions...]$reset"
 sudo chown -R http:http "$root"/"$app"

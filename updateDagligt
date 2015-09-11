@@ -17,6 +17,10 @@ reset="\e[0m"
 
 
 echo -e "$red$bold$blink[Updating Server]$reset"
+sudo sed -i "s/^DocumentRoot\ \"\/srv\/http\/.*/DocumentRoot\ \"\/srv\/http\/${app}\"/" /etc/httpd/conf/httpd.conf
+sudo sed -iE "/^<Directory\ \"\/srv\/http\/cgi/!s/^<Directory\ \"\/srv\/http\/.*/<Directory\ \"\/srv\/http\/${app}\">/" /etc/httpd/conf/httpd.conf
+
+
 echo -e "$red$bold[Removing old $app dir...]$reset"
 sudo rm -r --preserve-root "$root"/"$app"
 
