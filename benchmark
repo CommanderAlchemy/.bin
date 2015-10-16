@@ -25,12 +25,12 @@ queryGPU() {
 pids=~/pids
 
 # Create renders
-for i in {1..10} 
+for i in {1..50} 
   do 
     glxspheres64 &> /dev/null &
     echo $! >> "$pids"
     queryGPU
-    sleep 5
+    sleep 1
   done
 
 # Wait x sekonds

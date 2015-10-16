@@ -1,0 +1,59 @@
+#!/bin/bash
+#
+# Switch metamodes for multimonitor setup.
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+usage() {
+  cat << EOF
+  usage: $0 options
+
+  "ForceCompositionPipeline": possible values are "On" or "Off".
+    The NVIDIA X driver can use a composition pipeline to apply X screen transformations and rotations.
+    can be used to force the use of this pipeline, even when no transformations or rotations are applied to the screen.
+
+  "ForceFullCompositionPipeline": possible values are "On" or "Off".
+    This option implicitly enables "ForceCompositionPipeline" and additionally makes use of the composition pipeline to apply ViewPortOut scaling.
+
+  Args:
+  1:  Default Tripple Monitor
+  2:  Default Tripple Monitor w/ ForceCompositingPipeLine=On
+  22: Default Tripple Monitor w/ ForceFullCompositionPipeline=On
+
+  3:  Dualmonitor
+  4:  Dualmonitor w/ ForceCompositingPipeLine=On
+  44: Dualmonitor w/ ForceFullCompositionPipeline=On
+
+EOF
+}
+
+case ${1} in
+  1)  echo "Default Tripple Monitor"
+      nvidia-settings --assign CurrentMetaMode="DVI-I-1: 1920x1080 +1280+200, HDMI-0: 1920x1080 +3400+200, DVI-D-0: 1920x1080 +0+0 {rotation=right}"
+      xrandr --output DVI-I-1 --primary
+      ;;
+  2)  echo "Default Tripple Monitor ForceCompositingPipeLine=On"
+      nvidia-settings --assign CurrentMetaMode="DVI-I-1: 1920x1080 +1280+200 {ForceCompositionPipeline=On}, HDMI-0: 1920x1080 +3400+200 {ForceCompositionPipeline=On}, DVI-D-0: 1920x1080 +0+0 {rotation=right, ForceCompositionPipeline=On}"
+      xrandr --output DVI-I-1 --primary
+      ;;
+ 22)  echo "Default Tripple Monitor ForceFullCompositionPipeline=On"
+      nvidia-settings --assign CurrentMetaMode="DVI-I-1: 1920x1080 +1280+200 {ForceFullCompositionPipeline=On}, HDMI-0: 1920x1080 +3400+200 {ForceFullCompositionPipeline=On}, DVI-D-0: 1920x1080 +0+0 {rotation=right, ForceFullCompositionPipeline=On}"
+      xrandr --output DVI-I-1 --primary
+      ;;
+  3)  echo "Dualmonitor"
+      nvidia-settings --assign CurrentMetaMode="DVI-I-1: 1920x1080 +0+0, HDMI-0: 1920x1080 +2120+0, DVI-D-0: NULL"
+      xrandr --output DVI-I-1 --primary
+      ;;
+  4)  echo "Dualmonitor ForceCompositingPipeLine=On"
+      nvidia-settings --assign CurrentMetaMode="DVI-I-1: 1920x1080 +0+0 {ForceCompositionPipeline=On}, HDMI-0: 1920x1080 +2120+0 {ForceCompositionPipeline=On}, DVI-D-0: NULL"
+      xrandr --output DVI-I-1 --primary
+      ;;
+ 44)  echo "Dualmonitor ForceCompositingPipeLine=On"
+      nvidia-settings --assign CurrentMetaMode="DVI-I-1: 1920x1080 +0+0 {ForceCompositionPipeline=On}, HDMI-0: 1920x1080 +2120+0 {ForceCompositionPipeline=On}, DVI-D-0: NULL"
+      xrandr --output DVI-I-1 --primary
+      ;;
+  *)  echo "Invalid option"
+      sleep 1; echo; usage
+      ;;
+esac
+
+exit 0

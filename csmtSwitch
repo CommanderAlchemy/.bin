@@ -1,5 +1,5 @@
-#!/bin/bash                                                                                                                                                                                                                                                                       
-#                                                                                                                                                                                                                                                                                 
+#!/bin/bash
+#
 # WINE CSMT switch
 # Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
 #
@@ -7,37 +7,36 @@
 # Looks for enabled|disabled CSMT key in user.reg of exported wineprefix.
 # Creates a template for CSMT key in /tmp and toggles depending on CSMT value.
 # If there is no key entry it will create new key with CSMT enabled
-# 
+#
 # Usage:
 # WINEPREFIX=path-to-prefix csmtSwitch
 
 # Checks CSMT key and toggles
-CSMT_SWITCH() { 
+CSMT_SWITCH() {
   # If CSMT was enabled disable it.
   if [[ "$previous_state" == '"CSMT"="enabled"' ]]; then
     new_state=('"CSMT"="disabled"')
     sed -i 's/^"CSMT".*/'"$new_state"'/' "$tempfile"
-    regedit "$tempfile" 
+    regedit "$tempfile" &> /dev/null
     # If CSMT was disabled enable it.
-    else if [[ $previous_state == '"CSMT"="disabled"' ]]; then
+  elif [[ $previous_state == '"CSMT"="disabled"' ]]; then
     new_state=('"CSMT"="enabled"')
     sed -i 's/^"CSMT".*/'"$new_state"'/' "$tempfile"
-    regedit "$tempfile" 
+    regedit "$tempfile" &> /dev/null
     # If there was no CSMT value key create it from template.
     else
     new_state=('"CSMT"="enabled"')
-    regedit "$tempfile" 
-    fi
+    regedit "$tempfile" &> /dev/null
   fi
-  
+
   # Wait until regedit is finished and CSMT value is changed.
   while [[ "$current_state" != "$new_state" ]]; do
     sleep 2
     GET_STATE
   done
-  
+
   # Print changes
-  echo ""$previous_state" -> "$new_state""
+  echo "$previous_state" -> "$new_state"
   # Remove CSMT template (cleanup)
   rm "$tempfile"
 }

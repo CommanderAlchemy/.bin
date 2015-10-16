@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Flash nVidia Logo
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+GPULogoBrightness=0
+
+function setBrightness {
+  echo $1
+  nvidia-settings --assign GPULogoBrightness=${1}
+}
+
+setBrightness ${GPULogoBrightness}
+
+for (( ; ; ))
+do
+  setBrightness ${GPULogoBrightness}
+  setBrightness 100
+  setBrightness ${GPULogoBrightness}
+  setBrightness 100
+  setBrightness ${GPULogoBrightness}
+  sleep 1
+done
