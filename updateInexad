@@ -3,7 +3,7 @@
 # Configuration
 root="/srv/http"
 app="inexad"
-dev_path="/home/commander/Projects"
+dev_path="/home/commander/Projects/HTML/"
 
 # Font
 bold="\e[1m"

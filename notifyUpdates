@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# noyifyUpdates
+# Author: Artur O. Commander.Alchemy@gmail.com (Justice @ Freenode #Archlinux)
+
+PIDS=$(pgrep plasmashell)
+ICON="/home/commander/.local/share/icons/arch.png"
+BODY="There are $(checkupdates | wc -l ) updates available!"
+TITLE="Pacman"
+
+if [[ $(checkupdates | wc -l ) -gt 0 ]]; then
+
+    for p in $PIDS; do
+        dbus=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$p/environ | sed 's/DBUS_SESSION_BUS_ADDRESS=//')
+        user=$(grep -z USER /proc/$p/environ | sed 's/USER=//')
+        dply=$(grep -z DISPLAY /proc/$p/environ | sed 's/DISPLAY=//')
+
+        sudo -u $user sh -c "DBUS_SESSION_BUS_ADDRESS=\"$dbus\" DISPLAY=\"$dply\" /usr/bin/notify-send -i \"$ICON\" \"$TITLE\" \"$BODY\""
+    done
+
+fi
+exit 0

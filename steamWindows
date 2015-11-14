@@ -29,7 +29,7 @@ if [[ "$1" == "-b" ]]; then
         wine ~/.Games/steam/drive_c/Program\ Files/Steam/Steam.exe -no-dwrite &> ~/fps.txt &
         konsole -e tail -f ~/fps.txt &
         else
-	wine ~/.Games/steam/drive_c/Program\ Files/Steam/Steam.exe -no-dwrite &> /dev/null &
+	wine ~/.Games/steam/drive_c/Program\ Files/Steam/Steam.exe -dev &> /dev/null &
 fi
 
 exit 0

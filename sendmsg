@@ -14,7 +14,7 @@ if [[ "$1" == "" ]]; then
     echo "Third     param: Icon         default: gtk-info"
     echo "Fourth    param: urgency      default: normal"
 fi
-    
+
 sendmsg () {
     # Message
     if [[ "$1" == "" ]]; then
@@ -42,8 +42,7 @@ sendmsg () {
     else
         urgency="$4"
     fi
-    
+
     notify-send "$app" --app-name="$app" --icon="$icon" --urgency="$urgency" "$msg"
 }
-#sendmsg "$1" "$2" "$3" "$4"
-
+sendmsg "$1" "$2" "$3" "$4"

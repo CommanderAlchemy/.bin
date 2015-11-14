@@ -2,8 +2,8 @@
 
 # Configuration
 root="/srv/http"
-app="company"
-dev_path="/home/commander/Projects"
+app="sanpauli"
+dev_path="/home/commander/Projects/HTML/"
 
 # Font
 bold="\e[1m"
